@@ -18,11 +18,33 @@ const sendRequest = function (requestData) {
     return Axios(requestConfig);
 };
 
+exports.changeDetails = function(newDetails) {
+    return sendRequest({method: 'post', resource: '/change-details', data: newDetails}).then(function (res) {
+        let resData = res.data;
+        if (resData.status) {
+            Store.dispatch(userActions.userLoggedIn(resData.data));    
+        }
+        return {status: resData.status};
+    });
+};
+
+exports.changeProfilePicture = function(newProfilePictureId) {
+    return sendRequest({method: 'post', resource: '/change-profile-picture', data: {
+        profilePicture: newProfilePictureId
+    }}).then(function (res) {
+        let resData = res.data;
+        if (resData.status) {
+            Store.dispatch(userActions.userLoggedIn(resData.data));    
+        }
+        return {status: resData.status};
+    });
+};
+
 exports.getUser = function () {
     return sendRequest({method: 'get', resource: '/details'}).then(function (res) {
         let resData = res.data;
         if (resData.status) {
-            Store.dispatch(userActions.userLoggedIn({email: resData.data.email, username: resData.data.username}));    
+            Store.dispatch(userActions.userLoggedIn(resData.data));
         }
         return {status: resData.status};
     });

@@ -83,7 +83,7 @@ RegisterComponent.propTypes = {
     confirmPassword: React.PropTypes.string.isRequired,
     onConfirmPasswordChange: React.PropTypes.func.isRequired,
 
-    error: React.PropTypes.string.isRequired,
+    error: React.PropTypes.string,
 
     onRegister: React.PropTypes.func.isRequired
 }

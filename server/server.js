@@ -15,7 +15,7 @@ var salt           = require('./config').salt;
 var fs             = require('fs');
 
 //mongoose connect
-mongoose.connect('mongodb://localhost/ng2-starter');
+mongoose.connect('mongodb://localhost/react-redux-node-starter');
 
 // set our port
 var port = process.env.PORT || 3000; 
@@ -53,7 +53,7 @@ app.listen(port);
 // shoutout to the user                     
 console.log('Magic happens on port ' + port);
 
-
+// console.log(process.env);
 //insert dummy_user profile picture
 var uploadFolder = process.env.UPLOAD_PATH;
 if(!fs.existsSync(uploadFolder)) {

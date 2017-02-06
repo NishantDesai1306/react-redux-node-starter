@@ -3,7 +3,8 @@ exports.userLoggedIn = function (userDetails) {
         type: 'USER_LOGGED_IN',
         payload: {
             email: userDetails.email,
-            username: userDetails.username
+            username: userDetails.username,
+            profilePictureUrl: userDetails.profilePictureUrl
         }
     };
 };

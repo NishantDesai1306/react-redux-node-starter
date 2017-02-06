@@ -38,6 +38,10 @@ class AppContainer extends Component {
         browserHistory.push('/login');
     }
 
+    goToChangeDetails() {
+        browserHistory.push('/change-details');        
+    }
+
     render() {
         return (
             <AppComponent 
@@ -45,7 +49,9 @@ class AppContainer extends Component {
                 onLogout={this.handleLogout}
                 goToLogin={this.goToLogin}
                 goToDashboard={this.goToDashboard}
+                goToChangeDetails={this.goToChangeDetails}
                 username={this.props.user.username}
+                profilePictureUrl={this.props.user.profilePictureUrl}
             ></AppComponent>
         );
     }

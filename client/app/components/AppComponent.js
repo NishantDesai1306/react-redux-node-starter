@@ -8,7 +8,12 @@ const AppComponent = (props) => {
     if(props.username) {
         userMenu =  <Nav pullRight>
             <NavItem onClick={props.goToDashboard}>Dashboard</NavItem>
-            <NavDropdown id="user-menu" noCaret title={<div><Glyphicon glyph="user"/> &nbsp; {props.username}</div>}>
+            <NavDropdown id="user-menu" noCaret title={
+                <div>
+                    <img src={props.profilePictureUrl} height="25" width="25"/> &nbsp; {props.username}
+                </div>
+            }>
+                <MenuItem onClick={props.goToChangeDetails}>User Details</MenuItem>
                 <MenuItem onClick={props.onLogout}>Logout</MenuItem>
             </NavDropdown>
         </Nav>;
@@ -37,7 +42,9 @@ const AppComponent = (props) => {
 
 AppComponent.propTypes = {
     username: React.PropTypes.string,
+    profilePictureUrl: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired,
+    goToChangeDetails: React.PropTypes.func.isRequired,
     goToDashboard: React.PropTypes.func.isRequired,
     goToLogin: React.PropTypes.func.isRequired
 };

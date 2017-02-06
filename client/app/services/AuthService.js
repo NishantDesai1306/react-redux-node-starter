@@ -24,8 +24,9 @@ exports.isUserLoggedIn = function() {
 
 exports.login = function (userCredentials, saveToCookie) {
     return sendRequest({method: 'post', resource: '/login', data: userCredentials}).then(function (res) {
-        if (res.data.status) {
-            Store.dispatch(userActions.userLoggedIn({email: res.data.email, username: res.data.username}));
+        let resData = res.data;
+        if (resData.status) {
+            Store.dispatch(userActions.userLoggedIn(resData.data));
         }
 
         if(saveToCookie) {
@@ -52,8 +53,9 @@ exports.logout = function() {
 
 exports.register = function (userDetails) {
     return sendRequest({method: 'post', resource: '/register', data: userDetails}).then(function (res) {
-        if (res.data.status) {
-            Store.dispatch(userActions.userLoggedIn({email: res.data.email, username: res.data.username}));
+        let resData = res.data;
+        if (resData.status) {
+            Store.dispatch(userActions.userLoggedIn(resData.data));
         }
 
         return {status: res.data.status, reason: res.data.reason};

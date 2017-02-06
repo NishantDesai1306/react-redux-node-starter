@@ -42,7 +42,7 @@ const LoginComponent = props => {
                                 onChange={props.onPasswordChange}/>
 
                             <Checkbox value={props.isRemeberMeChecked} onClick={props.onRememberMeChange}>
-                                Remember Me
+                                <strong>Remember Me</strong>
                             </Checkbox>
 
                             {errorElement}
