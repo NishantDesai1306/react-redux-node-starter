@@ -1,21 +1,18 @@
 // modules =================================================
 var express        = require('express');
 var app            = express();
-var path = require('path');
-var cookieParser = require('cookie-parser');
+var path           = require('path');
+var cookieParser   = require('cookie-parser');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var morgan = require('morgan');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var session = require('express-session');
-var apiRouter = require('./api');
-var auth = require('./auth');
-var salt = require('./config').salt;
-
-var authRouter = auth.router;
-var isAuthenticated = auth.isAuthenticated;
-
+var morgan         = require('morgan');
+var mongoose       = require('mongoose');
+var passport       = require('passport');
+var session        = require('express-session');
+var apiRouter      = require('./api');
+var authRouter     = require('./auth');
+var salt           = require('./config').salt;
+var fs             = require('fs');
 
 //mongoose connect
 mongoose.connect('mongodb://localhost/ng2-starter');
@@ -23,11 +20,7 @@ mongoose.connect('mongodb://localhost/ng2-starter');
 // set our port
 var port = process.env.PORT || 3000; 
 
-// connect to our mongoDB database 
-// (uncomment after you enter in your own credentials in config/db.js)
-// mongoose.connect(db.url); 
-
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
@@ -36,6 +29,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(cookieParser());
 
 app.use(express.static(path.resolve('./dist')));
+app.use('/upload', express.static('upload'));
 
 app.use(session({
     secret: salt,
@@ -46,8 +40,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRouter);
-app.use('/api', isAuthenticated, apiRouter);
+app.use('/auth', authRouter.router);
+app.use('/api', authRouter.isAuthenticated, apiRouter);
 app.get('*', function(req, res, next) {
     res.sendFile(path.resolve('./dist/index.html'));
 });
@@ -58,6 +52,31 @@ app.listen(port);
 
 // shoutout to the user                     
 console.log('Magic happens on port ' + port);
+
+
+//insert dummy_user profile picture
+var uploadFolder = process.env.UPLOAD_PATH;
+if(!fs.existsSync(uploadFolder)) {
+    fs.mkdir(uploadFolder)    ;
+}
+
+if(!fs.readdirSync(uploadFolder).length) {
+    var Upload = require('./api/upload/upload.model');
+    var srcPath = './image/dummy_user.png';
+    var targetPath = path.resolve(uploadFolder, 'dummy_user.png');
+
+    fs.link(srcPath, targetPath, function (err) {
+        if (err) {
+            return console.error(err.toString());
+        }
+        
+        targetPath = targetPath.substring(targetPath.indexOf('upload'));
+        Upload.createUpload(targetPath)
+        .catch(function(err) {
+            console.error(err.toString());
+        });
+    });
+}
 
 // expose app           
 exports = module.exports = app;        

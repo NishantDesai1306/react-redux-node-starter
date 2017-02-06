@@ -14,6 +14,7 @@ var isAuthenticated = function(req, res, next) {
         next(new Error('Unauthorized'));
     }
 };
+exports.isAuthenticated = isAuthenticated;
 
 
 router.post('/login', passport.authenticate('local'), controller.successLogin);
@@ -21,7 +22,4 @@ router.post('/register', passport.authenticate('local-signup'), controller.succe
 router.post('/logout', isAuthenticated, controller.logout);
 
 
-module.exports = {
-    router: router,
-    isAuthenticated: isAuthenticated
-};
+exports.router = router;
