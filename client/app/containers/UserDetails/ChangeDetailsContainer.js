@@ -13,7 +13,6 @@ class ChangeDetailsContainer extends Component {
         this.state = {
             username: this.props.user.username,
             email: this.props.user.email,
-            profilePictureUrl: this.props.user.profilePictureUrl,
             profilePictureModalHandle: false,
             error: '',
             uploadProgress: 0
@@ -123,7 +122,7 @@ class ChangeDetailsContainer extends Component {
                 username={this.state.username}
                 onUsernameChange={this.handleUsernameChange}
 
-                profilePictureUrl={this.state.profilePictureUrl}
+                profilePictureUrl={this.props.user.profilePictureUrl}
 
                 profilePictureModalHandle={this.state.profilePictureModalHandle}
                 showProfilePictureModal={this.showProfilePictureModal}

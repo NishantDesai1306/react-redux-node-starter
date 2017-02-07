@@ -18,11 +18,26 @@ const sendRequest = function (requestData) {
     return Axios(requestConfig);
 };
 
+const setUser = function(user) {
+    Store.dispatch(userActions.userLoggedIn(user));
+};
+exports.setUser = setUser;
+
+exports.getUser = function () {
+    return sendRequest({method: 'get', resource: '/details'}).then(function (res) {
+        let resData = res.data;
+        if (resData.status) {
+            setUser(resData.data);
+        }
+        return {status: resData.status};
+    });
+};
+
 exports.changeDetails = function(newDetails) {
     return sendRequest({method: 'post', resource: '/change-details', data: newDetails}).then(function (res) {
         let resData = res.data;
         if (resData.status) {
-            Store.dispatch(userActions.userLoggedIn(resData.data));    
+            setUser(resData.data);
         }
         return {status: resData.status};
     });
@@ -34,18 +49,20 @@ exports.changeProfilePicture = function(newProfilePictureId) {
     }}).then(function (res) {
         let resData = res.data;
         if (resData.status) {
-            Store.dispatch(userActions.userLoggedIn(resData.data));    
+            setUser(resData.data);
         }
         return {status: resData.status};
     });
 };
 
-exports.getUser = function () {
-    return sendRequest({method: 'get', resource: '/details'}).then(function (res) {
-        let resData = res.data;
-        if (resData.status) {
-            Store.dispatch(userActions.userLoggedIn(resData.data));
-        }
-        return {status: resData.status};
+exports.changePassword = function(oldPassword, newPassword) {
+    return sendRequest({method: 'post', resource: '/change-password', data: {
+        oldPassword: oldPassword,
+        newPassword: newPassword
+    }}).then(function (res) {
+        return {
+            status: res.data.status,
+            reason: res.data.reason
+        };
     });
 };

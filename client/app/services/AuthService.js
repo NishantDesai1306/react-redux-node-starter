@@ -23,6 +23,9 @@ exports.isUserLoggedIn = function() {
 };
 
 exports.login = function (userCredentials, saveToCookie) {
+    if(saveToCookie) {
+        userCredentials.rememberMe = saveToCookie;
+    }
     return sendRequest({method: 'post', resource: '/login', data: userCredentials}).then(function (res) {
         let resData = res.data;
         if (resData.status) {

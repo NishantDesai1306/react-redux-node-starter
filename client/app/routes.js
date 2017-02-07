@@ -8,6 +8,7 @@ import LoginContainer from './containers/Login/LoginContainer';
 import DashboardContainer from './containers/DashboardContainer';
 import RegisterContainer from './containers/Login/RegisterContainer';
 import ChangeDetailsContainer from './containers/UserDetails/ChangeDetailsContainer';
+import ChangePasswordContainer from './containers/UserDetails/ChangePasswordContainer';
 
 const isUserLoggedIn = function (nextState, replace) {
     if (!Auth.isUserLoggedIn()) {
@@ -17,6 +18,7 @@ const isUserLoggedIn = function (nextState, replace) {
                 message: 'You have to Login first'
             }
         });
+        
     }
 };
 
@@ -25,9 +27,10 @@ const routes = (
         <Route path='/' component={AppContainer}>
             <IndexRoute component={HomeComponent}/>
             <Route path='/login' component={LoginContainer}></Route>
-            <Route path='/register' component={RegisterContainer}></Route>          
-            <Route path='/dashboard' onEnter={isUserLoggedIn} component={DashboardContainer}></Route>          
-            <Route path='/change-details' onEnter={isUserLoggedIn} component={ChangeDetailsContainer}></Route>          
+            <Route path='/register' component={RegisterContainer}></Route>
+            <Route path='/dashboard' onEnter={isUserLoggedIn} component={DashboardContainer}></Route>
+            <Route path='/change-details' onEnter={isUserLoggedIn} component={ChangeDetailsContainer}></Route>
+            <Route path='/change-password' onEnter={isUserLoggedIn} component={ChangePasswordContainer}></Route>
         </Route>
     </Router>
 );

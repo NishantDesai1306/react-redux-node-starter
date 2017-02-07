@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import LoginComponent from '../../components/Login/LoginComponent';
 import AuthService from '../../services/AuthService';
+import UserService from '../../services/UserService';
 import { browserHistory } from 'react-router';
 
 class LoginContainer extends Component {
@@ -8,8 +9,8 @@ class LoginContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: 'nishant',
-            password: 'nishant',
+            email: '',
+            password: '',
             error: this.props.location.query.message || '',
             isRememberMeChecked: false
         };
@@ -18,6 +19,14 @@ class LoginContainer extends Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleRememberMeChange = this.handleRememberMeChange.bind(this);
+    }
+
+    componentWillMount() {
+        UserService.getUser().then(function(response) {
+            if(response.status) {
+                browserHistory.push('/dashboard');                
+            }
+        });
     }
 
     handleLogin() {

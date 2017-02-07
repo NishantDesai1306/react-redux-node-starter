@@ -14,7 +14,7 @@ const DashboardComponent = (props) => {
 };
 
 DashboardComponent.propTypes = {
-    username: React.PropTypes.string.isRequired
+    username: React.PropTypes.string
 };
 
 export default DashboardComponent;

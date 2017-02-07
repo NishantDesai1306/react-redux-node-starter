@@ -39,11 +39,16 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate('remember-me'));
 
 app.use('/auth', authRouter.router);
 app.use('/api', authRouter.isAuthenticated, apiRouter);
 app.get('*', function(req, res, next) {
     res.sendFile(path.resolve('./dist/index.html'));
+});
+
+process.on('uncaughtException', function(err) {
+  console.log('Caught exception: ' + err);
 });
 
 // start app ===============================================
