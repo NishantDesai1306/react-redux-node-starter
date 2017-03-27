@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import ChangeDetailsComponent from '../../components/UserDetails/ChangeDetailsComponent';
 import UserService from '../../services/UserService';
@@ -14,6 +14,7 @@ class ChangeDetailsContainer extends Component {
             username: this.props.user.username,
             email: this.props.user.email,
             profilePictureModalHandle: false,
+            profilePictureBase64String: '',
             error: '',
             uploadProgress: 0
         };
@@ -25,8 +26,8 @@ class ChangeDetailsContainer extends Component {
         this.hideProfilePictureModal = this.hideProfilePictureModal.bind(this);
 
         var beforeUploadFn = (files, mill) => {
-            if(files[0].size > 5*1024*1024) {
-                this.setState(Object.assign({}, this.state, {error: 'File size cannot be more than 5MB'}));
+            if (files[0].size > 5 * 1024 * 1024) {
+                this.setState(Object.assign({}, this.state, { error: 'File size cannot be more than 5MB' }));
                 this.hideProfilePictureModal();
                 return false;
             }
@@ -35,34 +36,48 @@ class ChangeDetailsContainer extends Component {
             return true;
         };
         var uploadingFn = (progress) => {
-            var completedPercentage = Math.round((progress.loaded / progress.total)*100);
-            this.setState(Object.assign({}, this.state, {uploadProgress: completedPercentage}));
+            var completedPercentage = Math.round((progress.loaded / progress.total) * 100);
+            this.setState(Object.assign({}, this.state, { uploadProgress: completedPercentage }));
         };
         var uploadSuccessFn = (successResponse) => {
-            if(successResponse.status) {
+            if (successResponse.status) {
                 UserService.changeProfilePicture(successResponse.data).then(function() {
                     self.hideProfilePictureModal();
                 });
-            }
-            else {
+            } else {
                 console.error(successResponse.reason);
             }
         };
         var uploadErrorFn = (err) => {
-            this.setState(Object.assign({}, this.state, {error: err.toString()}));   
-            this.hideProfilePictureModal();                     
+            this.setState(Object.assign({}, this.state, { error: err.toString() }));
+            this.hideProfilePictureModal();
         };
 
-
-        this.uploaderOptions={
-            baseUrl:'/api/upload',
+        this.uploaderOptions = {
+            baseUrl: '/api/upload',
             dataType: 'json',
             multiple: false,
             accept: 'image/*',
             beforeUpload: beforeUploadFn,
             uploading: uploadingFn,
             uploadSuccess: uploadSuccessFn,
-            uploadError: uploadErrorFn
+            uploadError: uploadErrorFn,
+            chooseFile: (files) => {
+                if(files && files.length) {
+                    this.getBase64(files[0]);
+                }
+            }
+        };
+    }
+
+    getBase64(file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            this.setState(Object.assign({}, self.state, { profilePictureBase64String: reader.result }));
+        };
+        reader.onerror = (error) => {
+            this.setState(Object.assign({}, self.state, { error: message }));
         };
     }
 
@@ -70,79 +85,80 @@ class ChangeDetailsContainer extends Component {
         let self = this;
         let message = '';
 
-        if(!self.state.email) {
+        if (!self.state.email) {
             message = "Please enter username or email";
         }
-        if(!self.state.username) {
+        if (!self.state.username) {
             message = "Username can't be empty";
         }
-        self.setState(Object.assign({}, self.state, {error: message}));
+        self.setState(Object.assign({}, self.state, { error: message }));
 
-        if(message) {
+        if (message) {
             return;
         }
-        
+
         UserService.changeDetails({
             email: self.state.email,
             username: self.state.username
         }).then(function(res) {
-            if(res.status) {
+            if (res.status) {
                 browserHistory.push('/dashboard');
+            } else {
+                self.setState(Object.assign({}, self.state, { error: res.reason }));
             }
-            else {
-                self.setState(Object.assign({}, self.state, {error: res.reason}));
-            }
-        }, function(err){
-            self.setState(Object.assign({}, self.state, {error: err.reason}));
+        }, function(err) {
+            self.setState(Object.assign({}, self.state, { error: err.reason }));
         });
     }
 
     handleEmailChange(e) {
         let newEmailValue = e.target.value;
-        this.setState(Object.assign({}, this.state, {email: newEmailValue}));
+        this.setState(Object.assign({}, this.state, { email: newEmailValue }));
     }
     handleUsernameChange(e) {
         let newUsernameValue = e.target.value;
-        this.setState(Object.assign({}, this.state, {username: newUsernameValue}));
+        this.setState(Object.assign({}, this.state, { username: newUsernameValue }));
     }
 
     showProfilePictureModal() {
-        this.setState(Object.assign({}, this.state, {profilePictureModalHandle: true}));
+        this.setState(Object.assign({}, this.state, { profilePictureModalHandle: true }));
     }
     hideProfilePictureModal() {
-        this.setState(Object.assign({}, this.state, {profilePictureModalHandle: false}));
+        this.setState(Object.assign({}, this.state, { 
+            profilePictureModalHandle: false,
+            profilePictureBase64String: ''
+        }));
     }
-    
+
     render() {
-        return (
-            <ChangeDetailsComponent
-                email={this.state.email}
-                onEmailChange={this.handleEmailChange}
+        return ( <ChangeDetailsComponent email = { this.state.email }
+            onEmailChange = { this.handleEmailChange }
 
-                username={this.state.username}
-                onUsernameChange={this.handleUsernameChange}
+            username = { this.state.username }
+            onUsernameChange = { this.handleUsernameChange }
 
-                profilePictureUrl={this.props.user.profilePictureUrl}
+            profilePictureUrl = { this.props.user.profilePictureUrl }
 
-                profilePictureModalHandle={this.state.profilePictureModalHandle}
-                showProfilePictureModal={this.showProfilePictureModal}
-                hideProfilePictureModal={this.hideProfilePictureModal}
+            profilePictureModalHandle = { this.state.profilePictureModalHandle }
+            showProfilePictureModal = { this.showProfilePictureModal }
+            hideProfilePictureModal = { this.hideProfilePictureModal }
 
-                uploaderConfig={this.uploaderOptions}
-                uploadProgress={this.state.uploadProgress}
+            uploaderConfig = { this.uploaderOptions }
+            uploadProgress = { this.state.uploadProgress }
+            profilePicture = { this.state.profilePictureBase64String }
 
-                error={this.state.error}
+            error = { this.state.error }
 
-                onChangeDetails={this.handleChangeDetails}
-            ></ChangeDetailsComponent>
+            onChangeDetails = { this.handleChangeDetails } >
+            </ChangeDetailsComponent>
         );
     }
 }
 
 const mapStateToProps = (store) => {
-  return {
-    user: store.user
-  }
+    return {
+        user: store.user
+    }
 }
 
 export default connect(mapStateToProps, null)(ChangeDetailsContainer);

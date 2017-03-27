@@ -31,3 +31,8 @@
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
+
+.upload-group div {
+    display: flex;
+    justify-content: center;
+}

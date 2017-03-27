@@ -73,6 +73,7 @@ const ChangeDetailsComponent = props => {
             </Grid>
 
             <ChangeProfilePictureComponent 
+                profilePicture={props.profilePicture}
                 uploaderConfig={props.uploaderConfig}
                 uploadProgress={props.uploadProgress}
                 show={props.profilePictureModalHandle}
@@ -94,6 +95,7 @@ ChangeDetailsComponent.propTypes = {
 
     uploaderConfig: React.PropTypes.any.isRequired,
     uploadProgress: React.PropTypes.number.isRequired,
+    profilePicture: React.PropTypes.string.isRequired,
 
     profilePictureUrl: React.PropTypes.string.isRequired,
 
