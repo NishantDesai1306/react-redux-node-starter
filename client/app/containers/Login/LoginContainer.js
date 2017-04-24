@@ -11,8 +11,11 @@ class LoginContainer extends Component {
         this.state = {
             email: '',
             password: '',
-            error: this.props.location.query.message || '',
-            isRememberMeChecked: false
+            isRememberMeChecked: false,
+            error: {
+                email: '',
+                password: ''
+            }
         };
 
         this.handleLogin = this.handleLogin.bind(this);
@@ -31,20 +34,23 @@ class LoginContainer extends Component {
 
     handleLogin() {
         let self = this;
-        let message = '';
+
+        self.state.error = {};
+        self.setState(self.state);
 
         if(!self.state.email) {
-            message = "Please enter username or email";
+            self.state.error.email = "Please enter username or email";
+            self.setState(self.state);
         }
         if(!self.state.password) {
-            message = "Password can't be empty";
+            self.state.error.password = "Password can't be empty";
+            self.setState(self.state);
         }
-        self.setState(Object.assign({}, self.state, {error: message}));
 
-        if(message) {
+        if(self.state.error.email || self.state.error.password) {
             return;
         }
-        
+
         AuthService.login({
             email: self.state.email,
             password: self.state.password
@@ -53,10 +59,12 @@ class LoginContainer extends Component {
                 browserHistory.push('/dashboard');
             }
             else {
-                self.setState(Object.assign({}, self.state, {error: res.reason}));
+                self.state.error.email = res.reason;
+                self.setState(self.state);
             }
         }, function(err){
-            self.setState(Object.assign({}, self.state, {error: err.reason || 'Invalid Username or Password'}));
+            self.state.error.email = err.reason || 'Invalid Username or Password';
+            self.setState(self.state);
         });
     }
 

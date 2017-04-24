@@ -12,7 +12,11 @@ class RegisterContainer extends Component {
             username: '',
             password: '',
             confirmPassword: '',
-            error: ''
+            error: {
+                email: '',
+                username: '',
+                password: ''
+            }
         };
 
         this.handleRegister = this.handleRegister.bind(this);
@@ -24,20 +28,29 @@ class RegisterContainer extends Component {
 
     handleRegister() {
         let self = this;
+        
+        self.state.error = {};
+        self.setState(self.state);       
+
         if(!self.state.email) {
-            return self.setState(Object.assign({}, self.state, {error: 'Email can`t be empty'}));            
+            self.state.error.email = 'Email can`t be empty';
+            self.setState(self.state);
         }
         if(!self.state.username) {
-            return self.setState(Object.assign({}, self.state, {error: 'Username can`t be empty'}));            
+            self.state.error.username = 'Username can`t be empty';
+            self.setState(self.state);
         }
         if(!self.state.password) {
-            return self.setState(Object.assign({}, self.state, {error: 'Password can`t be empty'}));            
+            self.state.error.password = 'Password can`t be empty';
+            self.setState(self.state);
         }
         if(self.state.password !== self.state.confirmPassword) {
-            return self.setState(Object.assign({}, self.state, {error: 'Password and Confirm Password must match'}));        
+            self.state.error.password = 'Password and Confirm Password must match';
+            self.setState(self.state);
         }
-        else {
-            self.setState(Object.assign({}, self.state, {error: ''}));
+
+        if(self.state.error.email || self.state.error.username || self.state.error.password) {
+            return;
         }
 
         AuthService.register({

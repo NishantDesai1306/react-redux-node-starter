@@ -1,85 +1,78 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
-import {Grid, Row, Col, Panel, Alert, Button, FormGroup, ControlLabel, Glyphicon} from 'react-bootstrap';
-import FieldGroup from '../FieldGroup';
-import ChangeProfilePictureComponent from './ChangeProfilePictureComponent';
+import FileUpload from 'react-fileupload';
+
+import { Grid, Row, Col } from 'react-flexbox-grid';
+
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+
+import ProfilePictureComponent from '../../containers/UserDetails/ProfilePictureComponent';
 
 const ChangeDetailsComponent = props => {
 
-    let errorElement;
-    if (props.error) {
-        errorElement = <Alert className="align-center" bsStyle="danger">
-                            <span>{props.error}</span>
-                       </Alert>
-    } else {
-        errorElement = '';
-    }
-
     return (
-        <div>
-            <Grid className="margin-top-75">
-                <Row>
-                    <Col smOffset={3} sm={6}>
-                        <Panel>
-                            <div className="align-center">
-                                <h2><Glyphicon glyph="user"/>User Details</h2>
-                            </div>
+         <Grid fluid className="margin-top-50">
+            <Row>
+                <Col xsOffset={1} xs={10} smOffset={2} sm={8} mdOffset={3} md={6}>
+                    <Card style={{padding: '35px'}}>
+                        <Row center="xs">
+                            <Col xs={10}>
+                                <h2 className="margin-top-20 align-center-horizontally">User Details</h2>
 
-                            <div className="margin-top-20">
+                                <Row center="xs">
+                                    <ProfilePictureComponent profilePictureUrl={props.profilePictureUrl} username={props.username}></ProfilePictureComponent>
+                                </Row>
 
-                                <FieldGroup
-                                    id="username"
-                                    type="username"
-                                    label="Username"
-                                    placeholder="Username"
-                                    value={props.username}
-                                    onChange={props.onUsernameChange}/>
-
-                                <FieldGroup
-                                    id="email"
-                                    type="email"
-                                    label="Email"
-                                    placeholder="Email Address"
-                                    value={props.email}
-                                    onChange={props.onEmailChange}/>
-
-                                <div>
-                                    <FormGroup>
-                                        <ControlLabel>Profile Pciture</ControlLabel>
-                                        <div className="padding-bottom-10">
-                                            <img src={props.profilePictureUrl} alt={props.username} height="100" width="100"/>
-                                        </div>
-                                        <Button bsStyle="primary" onClick={props.showProfilePictureModal}>Change Profile Picture</Button>
-                                    </FormGroup>
-                                </div>
-
-                                {errorElement}
-
-                                <Row className="margin-top-20">
-                                    <Col sm={6}>
-                                        <Button block bsSize="large" bsStyle="primary" onClick={props.onChangeDetails}>Change Details</Button>
-                                    </Col>
-                                    <Col sm={6}>
-                                        <Link to="/change-password"><Button block bsStyle="danger" bsSize="large">Change Password</Button></Link>
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Email"
+                                            floatingLabelText="Email"
+                                            value={props.email}
+                                            errorText={props.error.email}
+                                            onChange={props.onEmailChange}
+                                        />
                                     </Col>
                                 </Row>
 
-                            </div>                        
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Username"
+                                            floatingLabelText="Username"
+                                            value={props.username}
+                                            errorText={props.error.username}
+                                            onChange={props.onUsernameChange}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                        </Panel>
-                    </Col>
-                    <Col sm={3}></Col>
-                </Row>
-            </Grid>
-
-            <ChangeProfilePictureComponent 
-                profilePicture={props.profilePicture}
-                uploaderConfig={props.uploaderConfig}
-                uploadProgress={props.uploadProgress}
-                show={props.profilePictureModalHandle}
-                onHide={props.hideProfilePictureModal}>
-            </ChangeProfilePictureComponent>
-        </div>
+                        <Row className="margin-top-20">
+                            <Col xsOffset={1} xs={10}>
+                                <Row center="xs">
+                                    <Col xs={6}>
+                                        <RaisedButton onClick={props.onChangeDetails} label="Save Changes" fullWidth={true} primary={true} />
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Link to="/change-password">
+                                            <RaisedButton label="Change Password" fullWidth={true} primary={true} />                                        
+                                        </Link>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+            </Row>
+        </Grid>
     );
 };
 ChangeDetailsComponent.propTypes = {
@@ -88,18 +81,13 @@ ChangeDetailsComponent.propTypes = {
 
     username: React.PropTypes.string.isRequired,
     onUsernameChange: React.PropTypes.func.isRequired,
-
-    profilePictureModalHandle: React.PropTypes.bool.isRequired,
-    showProfilePictureModal: React.PropTypes.func.isRequired,
-    hideProfilePictureModal: React.PropTypes.func.isRequired,
-
-    uploaderConfig: React.PropTypes.any.isRequired,
-    uploadProgress: React.PropTypes.number.isRequired,
-    profilePicture: React.PropTypes.string.isRequired,
-
+    
     profilePictureUrl: React.PropTypes.string.isRequired,
 
-    error: React.PropTypes.string.isRequired,
+    error: React.PropTypes.shape({
+        email: React.PropTypes.string,
+        username: React.PropTypes.string,
+    }),
 
     onChangeDetails: React.PropTypes.func.isRequired
 }

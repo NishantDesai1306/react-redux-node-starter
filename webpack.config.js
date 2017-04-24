@@ -20,6 +20,11 @@ module.exports = {
                     presets: ['es2015', 'react'],
                     plugins: ["transform-es2015-destructuring", "transform-object-rest-spread"]
                 }
+            },
+            {
+                test: /\.css$/,
+                loader: 'style-loader!css-loader',
+                include: /flexboxgrid/
             }
         ]
     },

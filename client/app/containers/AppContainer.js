@@ -21,36 +21,38 @@ class AppContainer extends Component {
             });
         }
     }
-
-    handleLogout() {
-        AuthService.logout().then(function(res) {
-            if(res.status) {
-                browserHistory.push('/');
+    
+    handleUserMenuItemSelected(e ,o) {
+        switch(o.key) {
+            case 'user-details': {
+                return browserHistory.push('/change-details');
             }
-        });
+            case 'logout': {
+                return AuthService.logout().then(function(res) {
+                    if(res.status) {
+                        browserHistory.push('/');
+                    }
+                });                
+            }
+        }
     }
 
     goToDashboard() {
-        browserHistory.push('/dashboard');
+        return browserHistory.push('/dashboard');        
     }
 
     goToLogin() {
         browserHistory.push('/login');
     }
 
-    goToChangeDetails() {
-        browserHistory.push('/change-details');        
-    }
-
     render() {
         return (
             <AppComponent 
                 children={this.props.children}
-                onLogout={this.handleLogout}
                 goToLogin={this.goToLogin}
                 goToDashboard={this.goToDashboard}
-                goToChangeDetails={this.goToChangeDetails}
                 username={this.props.user.username}
+                onUserMenuItemSelected={this.handleUserMenuItemSelected}
                 profilePictureUrl={this.props.user.profilePictureUrl}
             ></AppComponent>
         );

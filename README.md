@@ -21,7 +21,10 @@ Setup this project
 4. To start the project execute `npm run start`
 5. Open [localhost:3000](https://localhost:3000)
 
-![ ](https://github.com/NishantDesai1306/react-redux-node-starter/blob/master/image/demo.png)
+![ ](https://github.com/NishantDesai1306/react-redux-node-starter/blob/master/image/login.png)
+![ ](https://github.com/NishantDesai1306/react-redux-node-starter/blob/master/image/dashboard.png)
+![ ](https://github.com/NishantDesai1306/react-redux-node-starter/blob/master/image/user-details.png)
+![ ](https://github.com/NishantDesai1306/react-redux-node-starter/blob/master/image/change-password.png)
 
 ---
 

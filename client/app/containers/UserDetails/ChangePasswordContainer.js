@@ -12,7 +12,10 @@ export default class ChangePasswordContainer extends Component {
             oldPassword: '',
             newPassword: '',
             confirmNewPassword: '',
-            error: ''
+            error: {
+                oldPassword: '',
+                newPassword: ''
+            }
         };
 
         this.handleChangePassword = this.handleChangePassword.bind(this);
@@ -23,21 +26,21 @@ export default class ChangePasswordContainer extends Component {
 
     handleChangePassword() {
         let self = this;
-        let message = '';
+       
+       self.state.error = {};
 
         if(!self.state.oldPassword) {
-            message = "Please enter your Old Password";
+            self.state.error.oldPassword = "Please enter your Old Password";
         }
         if(!self.state.newPassword) {
-            message = "Please enter new password";
+            self.state.error.newPassword = "Please enter new password";
         }
         if(self.state.newPassword !== self.state.confirmNewPassword) {
-            message = "New Password and Confirm New Password must match";
+            self.state.error.newPassword = "New Password and Confirm New Password must match";
         }
 
-        self.setState(Object.assign({}, self.state, {error: message}));
-
-        if(message) {
+        self.setState(self.state);
+        if(self.state.error.oldPassword || self.state.error.newPassword) {
             return;
         }
         
@@ -47,29 +50,27 @@ export default class ChangePasswordContainer extends Component {
                     browserHistory.push('/dashboard');
                 }
                 else {
-                    self.setState(Object.assign({}, self.state, {error: res.reason}));
+                    self.state.error.oldPassword = res.reason;
+                    self.setState(self.state);
                 }
             }, function(err){
-                self.setState(Object.assign({}, self.state, {error: err.reason}));
+                self.state.error.oldPassword = err.reason;
+                self.setState(self.state);               
             });
     }
 
     handleChangeOldPassword(e) {
         let newValue = e.target.value;
         this.setState(Object.assign({}, this.state, {oldPassword: newValue}));
-        console.log(this.state);
     }
     handleChangeNewPassword(e) {
         let newValue = e.target.value;
         this.setState(Object.assign({}, this.state, {newPassword: newValue}));
-        console.log(this.state);
         
     }
     handleChangeConfirmNewPassword(e) {
         let newValue = e.target.value;
-        this.setState(Object.assign({}, this.state, {confirmNewPassword: newValue}));
-        console.log(this.state);
-        
+        this.setState(Object.assign({}, this.state, {confirmNewPassword: newValue}));        
     }
 
     render() {

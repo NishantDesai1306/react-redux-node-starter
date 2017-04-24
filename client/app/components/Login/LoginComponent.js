@@ -1,66 +1,83 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
-import {Grid, Row, Col, Panel, Alert, Button, Checkbox, FormGroup} from 'react-bootstrap';
-import FieldGroup from '../FieldGroup';
+
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import CheckBox from 'material-ui/CheckBox';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
 const LoginComponent = props => {
 
-    let errorElement;
-    if (props.error) {
-        errorElement = <Alert className="align-center" bsStyle="danger">
-                            <span>{props.error}</span>
-                       </Alert>
-    } else {
-        errorElement = '';
-    }
-
     return (
-        <Grid className="margin-top-75">
+        <Grid fluid className="margin-top-50">
             <Row>
-                <Col smOffset={4} sm={4}>
-                    <Panel>
-                        <div className="center-align">
-                            <h2>Login</h2>
-                        </div>
+                <Col xsOffset={1} xs={10} smOffset={2} sm={8} mdOffset={3} md={6}>
+                    <Card style={{padding: '35px'}}>
+                        <Row center="xs">
+                            <Col xs={10}>
+                                <h2 className="margin-top-20 align-center-horizontally">Login</h2>
 
-                        <div className="margin-top-20">
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Username or Email"
+                                            floatingLabelText="Email"
+                                            value={props.email}
+                                            errorText={props.error.email}
+                                            onChange={props.onEmailChange}
+                                        />
+                                    </Col>
+                                </Row>
 
-                            <FieldGroup
-                                id="email"
-                                type="email"
-                                label="Email Address"
-                                placeholder="Email"
-                                value={props.email}
-                                onChange={props.onEmailChange}/>
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Password Field"
+                                            floatingLabelText="Password"
+                                            type="password"
+                                             value={props.password}
+                                             errorText={props.error.password}
+                                            onChange={props.onPasswordChange}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                            <FieldGroup
-                                id="password"
-                                type="password"
-                                label="Password"
-                                placeholder="Password"
-                                value={props.password}
-                                onChange={props.onPasswordChange}/>
+                        <Row className="margin-top-20">
+                            <Col xsOffset={1} xs={10}>
+                                <Row>
+                                    <Col xs={12}>
+                                        <CheckBox
+                                            label={"Remember Me"}
+                                            checked={props.isRemeberMeChecked} 
+                                            onClick={props.onRememberMeChange}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                            <Checkbox value={props.isRemeberMeChecked} onClick={props.onRememberMeChange}>
-                                <strong>Remember Me</strong>
-                            </Checkbox>
-
-                            {errorElement}
-
-                            <Row className="margin-top-20">
-                                <Col sm={6}>
-                                    <Button block bsSize="large" bsStyle="primary" onClick={props.onLogin}>Login</Button>
-                                </Col>
-                                <Col sm={6}>
-                                    <Link to="/register"><Button block bsSize="large">Register</Button></Link>
-                                </Col>
-                            </Row>
-
-                        </div>                        
-
-                    </Panel>
+                        <Row className="margin-top-20">
+                            <Col xsOffset={1} xs={10}>
+                                <Row center="xs">
+                                    <Col xs={6}>
+                                        <RaisedButton onClick={props.onLogin} label="Login" fullWidth={true} primary={true} />
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Link to="/register">
+                                            <RaisedButton label="Register" fullWidth={true} primary={true} />                                        
+                                        </Link>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Card>
                 </Col>
-                <Col sm={4}></Col>
             </Row>
         </Grid>
     );
@@ -75,7 +92,10 @@ LoginComponent.propTypes = {
     isRemeberMeChecked: React.PropTypes.bool.isRequired,
     onRememberMeChange: React.PropTypes.func.isRequired,
 
-    error: React.PropTypes.string.isRequired,
+    error: React.PropTypes.shape({
+        email: React.PropTypes.string,
+        password: React.PropTypes.string,
+    }),
 
     onLogin: React.PropTypes.func.isRequired
 }

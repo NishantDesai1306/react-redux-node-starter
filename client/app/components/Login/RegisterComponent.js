@@ -1,71 +1,93 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
-import {Grid, Row, Col, Panel, Button, Alert} from 'react-bootstrap';
-import FieldGroup from '../FieldGroup';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import SocialPersonAdd from 'material-ui/svg-icons/social/person-add'
+
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
 const RegisterComponent = props => {
 
-    let errorElement = '';
-    if (props.error) {
-        errorElement = <Alert className="align-center" bsStyle="danger">
-            <span>{props.error}</span>
-        </Alert>;
-    }
-
     return (
-        <Grid className="margin-top-50">
+        <Grid fluid className="margin-top-50">
             <Row>
-                <Col sm={4} smOffset={4}>
-                    <Panel>
-                        <div className="center-align">
-                            <h2>Register</h2>
-                        </div>
+                <Col xsOffset={1} xs={10} smOffset={2} sm={8} mdOffset={3} md={6}>
+                    <Card style={{padding: '35px'}}>
+                        <Row center="xs">
+                            <Col xs={10}>
+                                <h2 className="margin-top-20 align-center-horizontally">
+                                    Register
+                                </h2>
 
-                        <div className="margin-top-20">
-                            <FieldGroup
-                                id="email"
-                                type="email"
-                                label="Email Address"
-                                placeholder="Email"
-                                value={props.email}
-                                onChange={props.onEmailChange}/>
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Email"
+                                            floatingLabelText="Email"
+                                            value={props.email}
+                                            errorText={props.error.email}
+                                            onChange={props.onEmailChange}
+                                        />
+                                    </Col>
+                                </Row>
 
-                            <FieldGroup
-                                id="username"
-                                type="text"
-                                label="Username"
-                                placeholder="Username"
-                                value={props.username}
-                                onChange={props.onUsernameChange}/>
+                                 <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Username"
+                                            floatingLabelText="Username"
+                                            value={props.username}
+                                            errorText={props.error.username}
+                                            onChange={props.onUsernameChange}
+                                        />
+                                    </Col>
+                                </Row>
 
-                            <FieldGroup
-                                id="password"
-                                type="password"
-                                label="Password"
-                                placeholder="Password"
-                                value={props.password}
-                                onChange={props.onPasswordChange}/>
 
-                            <FieldGroup
-                                id="confirm-password"
-                                type="password"
-                                label="Confirm Password"
-                                placeholder="Confirm Password"
-                                value={props.confirmPassword}
-                                onChange={props.onConfirmPasswordChange}/>
-                                
-                            {errorElement}
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Password"
+                                            floatingLabelText="Password"
+                                            type="password"
+                                            value={props.password}
+                                            errorText={props.error.password}
+                                            onChange={props.onPasswordChange}
+                                        />
+                                    </Col>
+                                </Row>
 
-                            <Row className="margin-top-20">
-                                <Col sm={12}>
-                                    <Button bsStyle="primary" bsSize="large" block onClick={props.onRegister}>Register</Button>
-                                </Col>
-                            </Row>
-                        </div>
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <TextField
+                                            style={{width: '100%'}}
+                                            hintText="Confirm Password"
+                                            floatingLabelText="Confirm Password"
+                                            type="password"
+                                             value={props.confirmPassword}
+                                            onChange={props.onConfirmPasswordChange}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                    </Panel>
+                        <Row className="margin-top-20">
+                            <Col xsOffset={1} xs={10}>
+                                <Row center="xs">
+                                    <Col xs={12}>
+                                        <RaisedButton label="Register" onClick={props.onRegister} fullWidth={true} primary={true} />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Card>
                 </Col>
-                <Col sm={4}></Col>
             </Row>
         </Grid>
     );
@@ -83,7 +105,11 @@ RegisterComponent.propTypes = {
     confirmPassword: React.PropTypes.string.isRequired,
     onConfirmPasswordChange: React.PropTypes.func.isRequired,
 
-    error: React.PropTypes.string,
+    error: React.PropTypes.shape({
+        email: React.PropTypes.string,
+        username: React.PropTypes.string,
+        password: React.PropTypes.string
+    }),
 
     onRegister: React.PropTypes.func.isRequired
 }
