@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 var passportConfig = require('./passport-config');
 var controller = require('./auth.controller');
+var AuthToken = require('./token/authToken.model');
 
 passportConfig.setupPassport(passport);
 
@@ -10,6 +11,21 @@ var isAuthenticated = function(req, res, next) {
     if(req.isAuthenticated()) {
         next();
     } 
+    else if (req.appType === 'mobile') {
+        var token = req.headers['x-access-token'];
+        if (!token) {
+            return res.status(401).send({ message: 'No token provided.' });
+        }
+
+        AuthToken.consume(token)
+        .then(function (user) {
+            req.user = user;
+            next();
+        })
+        .catch(function (err) {
+            return next(err);
+        });
+    }
     else {
         next(new Error('Unauthorized'));
     }

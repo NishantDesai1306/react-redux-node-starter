@@ -1,36 +1,64 @@
 var mongoose = require('mongoose');
-var moment = require('moment');
+var Schema = mongoose.Schema;
 var Q = require('q');
 var bcrypt = require('bcrypt-nodejs');
 var _ = require('lodash');
 var randomString = require('randomstring');
+var TokenModel = require('./token.model');
 
-var Schema = mongoose.Schema;
-
-var tokenSchema = new Schema({
-    token: {
-        type: String,
-        required: true
+var authTokenSchema = new Schema({
+    lastUsed: {
+        type: Date
     },
-    user: {
-        type: Schema.Types.ObjectId, 
-        ref: 'User'
+    lifeTimeHours: {
+        type: Number,
+        default: 24
     }
-}, {
-    discriminatorKey: 'type'
 });
 
-tokenSchema.statics = {
+authTokenSchema.pre('save', function(next) {
+    this.lastUsed = new Date();
+    next();
+});
+
+authTokenSchema.methods = {
+    isExpired: function() {
+        var tokenObj = this;
+
+        var lastUsedMoment = moment(tokenObj.lastUsed);
+        var expiresMoment = lastUsedMoment.add(tokenObj.lifeTimeHours, 'hours');
+
+        return expiresMoment.isAfter(lastUsedMoment);
+    }
+}
+
+authTokenSchema.statics = {
     consumeToken: function(token) {
         var consumeTokenDefer = Q.defer();
 
-        this.findOne({token: token}, function(err, tokenObj) {
+        this
+        .findOne({token: token})
+        .populate('user')
+        .exec(function(err, tokenObj) {
             if(err) {
                 return consumeTokenDefer.reject(err);
             }
 
-            consumeTokenDefer.resolve(tokenObj.user);
-            tokenObj.remove();
+            if (tokenObj.isExpired()) {
+                tokenObj.remove(function() {
+                    err = new Error('token expired');
+                    consumeTokenDefer.reject(err);
+                });
+            }
+            else {
+                tokenObj.save(function(err) {
+                    if (err) {
+                        return consumeTokenDefer.reject(err);
+                    }
+
+                    consumeTokenDefer.resolve(tokenObj.user);
+                });
+            }
         });
 
         return consumeTokenDefer.promise;
@@ -75,6 +103,6 @@ tokenSchema.statics = {
     }
 };
 
-var Token = mongoose.model('Token', tokenSchema);
+var AuthToken = TokenModel.discriminator('AuthTokenSchema', authTokenSchema);
 
-module.exports = Token;
+module.exports = AuthToken;
