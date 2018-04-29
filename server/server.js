@@ -47,7 +47,7 @@ function detectApp(req, res, next) {
 }
 
 app.use(['/auth', '/app/auth'], detectApp, authRouter.router);
-app.use(['/api', '/app/api'], authRouter.isAuthenticated, detectApp, apiRouter);
+app.use(['/api', '/app/api'], detectApp, authRouter.isAuthenticated, apiRouter);
 app.get('*', function(req, res, next) {
     res.sendFile(path.resolve('./dist/index.html'));
 });

@@ -12,12 +12,12 @@ var isAuthenticated = function(req, res, next) {
         next();
     } 
     else if (req.appType === 'mobile') {
-        var token = req.headers['x-access-token'];
+        var token = req.headers['x-auth-token'];
         if (!token) {
             return res.status(401).send({ message: 'No token provided.' });
         }
 
-        AuthToken.consume(token)
+        AuthToken.consumeToken(token)
         .then(function (user) {
             req.user = user;
             next();
