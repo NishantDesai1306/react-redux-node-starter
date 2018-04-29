@@ -5,3 +5,4 @@ node_modules
 mongo.bat
 upload
 /typings
+./package-lock.json
